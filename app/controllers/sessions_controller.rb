@@ -18,11 +18,7 @@ class SessionsController < ApplicationController
     end
 
     if user
-      if params[:remember_me]
-        cookies.permanent[:auth_token] = user.auth_token
-      else
-        session[:user_id] = user.id
-      end
+      session[:user_id] = user.id
       redirect_to path
     else
       flash[:error] = e.message
