@@ -16,10 +16,23 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= (
-      User.find_by(auth_token: cookies[:auth_token].to_s) ||
-      User.find_by(id: session[:user_id].to_s)
-    )
+    @current_user ||= begin
+      auth_token = cookies[:auth_token].to_s
+      user_id = session[:user_id]
+
+      if auth_token.present?
+        user = User.find_by(auth_token: auth_token)
+        if user && user_id.present? && user.id.to_s != user_id.to_s
+          reset_session
+          cookies.delete(:auth_token)
+          nil
+        else
+          user
+        end
+      elsif user_id.present?
+        nil
+      end
+    end
   end
 
   def authenticated

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] ||= "test"
+ENV["SECRET_KEY_BASE"] ||= "test_secret_key_base_for_specs_only_1234567890"
 
 # To use simplecov, do this: COVERAGE=true rake
 require "simplecov"
