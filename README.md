@@ -48,6 +48,11 @@ For a complete list of vulnerabilities with detailed explanations and tutorials,
    rails db:setup
    ```
 
+   To seed the `james@metacorp.com` account outside local training and test environments, set a deployment-specific password first:
+   ```bash
+   SEED_JAMES_PASSWORD='replace-with-a-secret' rails db:setup
+   ```
+
 4. **Start the server:**
    ```bash
    rails server
