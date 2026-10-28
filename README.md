@@ -43,17 +43,22 @@ For a complete list of vulnerabilities with detailed explanations and tutorials,
    bundle install
    ```
 
-3. **Setup the database:**
+3. **Set the application secret:**
+   ```bash
+   export SECRET_KEY_BASE="$(bundle exec rails secret)"
+   ```
+
+4. **Setup the database:**
    ```bash
    rails db:setup
    ```
 
-4. **Start the server:**
+5. **Start the server:**
    ```bash
    rails server
    ```
 
-5. **Open your browser:**
+6. **Open your browser:**
    Navigate to `http://localhost:3000` and start exploring!
 
 ### Other Rails Versions
@@ -118,9 +123,9 @@ Additional documentation covering advanced and modern Rails security concepts:
 **For Mac Apple Silicon (ARM64):** Rosetta must be installed
 
 ```bash
-docker-compose build
-docker-compose run web rails db:setup
-docker-compose up
+SECRET_KEY_BASE="$(bundle exec rails secret)" docker-compose build
+SECRET_KEY_BASE="$(bundle exec rails secret)" docker-compose run web rails db:setup
+SECRET_KEY_BASE="$(bundle exec rails secret)" docker-compose up
 ```
 
 The application will be available at `http://localhost:3000`
