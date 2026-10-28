@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :messages, foreign_key: :receiver_id, dependent: :destroy
 
   before_save :hash_password
+  before_save :rotate_auth_token, if: :will_save_change_to_password?
   after_create { generate_token(:auth_token) }
   before_create :build_benefits_data
 
@@ -53,6 +54,13 @@ class User < ApplicationRecord
   def hash_password
     if will_save_change_to_password?
       self.password = Digest::MD5.hexdigest(self.password)
+    end
+  end
+
+  def rotate_auth_token
+    loop do
+      self.auth_token = Encryption.encrypt_sensitive_value(SecureRandom.hex(32))
+      break unless User.exists?(auth_token: auth_token)
     end
   end
 

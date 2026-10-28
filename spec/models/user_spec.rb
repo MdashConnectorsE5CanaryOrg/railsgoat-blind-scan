@@ -35,4 +35,25 @@ describe User do
     user.save!
     expect(User.all.first.first_name).to eq(new_name)
   end
+
+  it "rotates auth_token when password changes" do
+    user = UserFixture.normal_user
+    original_token = user.auth_token
+    new_password = "nEw P@ssw0rd!"
+
+    user.password = new_password
+    user.password_confirmation = new_password
+    user.save!
+
+    expect(user.reload.auth_token).not_to eq(original_token)
+  end
+
+  it "does not rotate auth_token for profile-only updates" do
+    user = UserFixture.normal_user
+    original_token = user.auth_token
+
+    user.update!(first_name: "Updated")
+
+    expect(user.reload.auth_token).to eq(original_token)
+  end
 end
