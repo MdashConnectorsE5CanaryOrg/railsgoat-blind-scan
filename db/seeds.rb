@@ -3,6 +3,12 @@
 # The data can then be loaded with the rails db:seed (or created alongside the db with db:setup).
 #
 
+def james_seed_password
+  return ENV.fetch("SEED_JAMES_PASSWORD") if Rails.env.production?
+
+  ENV.fetch("SEED_JAMES_PASSWORD", "alohaowasp")
+end
+
 users = [
   {
     email: "admin@metacorp.com",
@@ -34,8 +40,8 @@ users = [
   {
     email: "james@metacorp.com",
     admin: false,
-    password: "alohaowasp",
-    password_confirmation: "alohaowasp",
+    password: james_seed_password,
+    password_confirmation: james_seed_password,
     first_name: "James",
     last_name: "Anderson",
   },
