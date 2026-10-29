@@ -7,12 +7,13 @@ class Benefits < ApplicationRecord
     f = File.open(full_file_name, "wb+")
     f.write file.read
     f.close
-    make_backup(file, data_path, full_file_name) if backup == "true"
+    make_backup(file, data_path, full_file_name) if backup
   end
 
   def self.make_backup(file, data_path, full_file_name)
     if File.exist?(full_file_name)
-      silence_streams(STDERR) { system("cp #{full_file_name} #{data_path}/bak#{Time.zone.now.to_i}_#{file.original_filename}") }
+      backup_file_name = data_path.join("bak#{Time.zone.now.to_i}_#{file.original_filename}")
+      FileUtils.cp(full_file_name, backup_file_name)
     end
   end
 
