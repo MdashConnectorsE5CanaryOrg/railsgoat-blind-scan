@@ -58,7 +58,7 @@ class User < ApplicationRecord
 
   def generate_token(column)
     loop do
-      self[column] = Encryption.encrypt_sensitive_value(self.id)
+      self[column] = SecureRandom.urlsafe_base64(32)
       break unless User.exists?(column => self[column])
     end
 
