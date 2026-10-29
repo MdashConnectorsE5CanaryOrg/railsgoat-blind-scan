@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 class BenefitFormsController < ApplicationController
+  BACKUP_UPLOADS = false
 
   def index
     @benefits = Benefits.new
@@ -55,7 +56,7 @@ class BenefitFormsController < ApplicationController
     end
 
     begin
-      Benefits.save(file, params[:benefits][:backup])
+      Benefits.save(file, BACKUP_UPLOADS)
       flash[:success] = "File '#{file.original_filename}' uploaded successfully!"
     rescue => e
       flash[:error] = "Failed to upload file: #{e.message}"
