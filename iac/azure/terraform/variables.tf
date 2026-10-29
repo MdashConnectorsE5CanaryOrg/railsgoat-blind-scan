@@ -53,8 +53,7 @@ variable "enable_public_database" {
 }
 
 variable "bootstrap_password" {
-  description = "Initial credential shared by the application and database bootstrap process."
+  description = "Initial credential shared by the application and database bootstrap process. Supply this value from environment-specific secret management or a tfvars file that is not committed."
   type        = string
   sensitive   = true
-  default     = "RailsGoat-Workshop-2026!"
 }
