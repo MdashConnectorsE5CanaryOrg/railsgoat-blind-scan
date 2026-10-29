@@ -2,8 +2,10 @@
 class PasswordResetsController < ApplicationController
   skip_before_action :authenticated
 
+  RESET_TOKEN_TTL = 15.minutes
+
   def reset_password
-    user = Marshal.load(Base64.decode64(params[:user])) unless params[:user].nil?
+    user = user_from_token(params[:token])
 
     if user && params[:password] && params[:confirm_password] && params[:password] == params[:confirm_password]
       user.password = params[:password]
@@ -40,24 +42,40 @@ class PasswordResetsController < ApplicationController
   private
 
   def password_reset_mailer(user)
-    token = generate_token(user.id, user.email)
+    token = generate_token(user)
     UserMailer.forgot_password(user.email, token).deliver
   end
 
-  def generate_token(id, email)
-    hash = Digest::MD5.hexdigest(email)
-    "#{id}-#{hash}"
+  def generate_token(user)
+    verifier.generate(
+      user_id: user.id,
+      purpose: "password_reset",
+      issued_at: Time.current.to_i
+    )
   end
 
   def is_valid?(token)
-    if token =~ /(?<user>\d+)-(?<email_hash>[A-Z0-9]{32})/i
+    @user = user_from_token(token)
+    @user.present?
+  end
 
-      # Fetch the user by their id, and hash their email address
-      @user = User.find_by(id: $~[:user])
-      email = Digest::MD5.hexdigest(@user.email)
+  def user_from_token(token)
+    payload = verifier.verified(token)
+    return false unless payload.is_a?(Hash)
+    return false unless payload["purpose"] == "password_reset" || payload[:purpose] == "password_reset"
 
-      # Compare and validate our hashes
-      return true if email == $~[:email_hash]
-    end
+    issued_at = payload["issued_at"] || payload[:issued_at]
+    return false if issued_at.to_i < RESET_TOKEN_TTL.ago.to_i
+
+    user_id = payload["user_id"] || payload[:user_id]
+    User.find_by(id: user_id)
+  end
+
+  def verifier
+    @verifier ||= ActiveSupport::MessageVerifier.new(
+      Rails.application.secret_key_base,
+      digest: "SHA256",
+      serializer: JSON
+    )
   end
 end
