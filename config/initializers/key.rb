@@ -10,8 +10,6 @@
 #
 # Hardcoding keys or omitting secure secret management must NEVER be done
 # in production applications.
-if Rails.env.production?
-  # Specify env variable/location/etc. to retrieve key from
-else
-  KEY = "123456789101112123456789101112123456789101112"
+KEY = ENV.fetch("APP_ENCRYPTION_KEY") do
+  raise "APP_ENCRYPTION_KEY must be set"
 end

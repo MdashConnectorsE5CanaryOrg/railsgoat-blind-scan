@@ -48,12 +48,17 @@ For a complete list of vulnerabilities with detailed explanations and tutorials,
    rails db:setup
    ```
 
-4. **Start the server:**
+4. **Set the application encryption key:**
+   ```bash
+   export APP_ENCRYPTION_KEY="replace-with-a-32-byte-or-longer-secret"
+   ```
+
+5. **Start the server:**
    ```bash
    rails server
    ```
 
-5. **Open your browser:**
+6. **Open your browser:**
    Navigate to `http://localhost:3000` and start exploring!
 
 ### Other Rails Versions
