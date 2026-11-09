@@ -47,14 +47,13 @@ variable "application_minimum_tls_version" {
 }
 
 variable "enable_public_database" {
-  description = "Allows database maintenance without private network connectivity."
+  description = "Deprecated: PostgreSQL public access is disabled to avoid exposing the admin endpoint."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "bootstrap_password" {
-  description = "Initial credential shared by the application and database bootstrap process."
+  description = "Initial credential shared by the application and database bootstrap process. Must be supplied per deployment."
   type        = string
   sensitive   = true
-  default     = "RailsGoat-Workshop-2026!"
 }
