@@ -67,7 +67,7 @@ resource "azurerm_postgresql_server" "application" {
   administrator_login_password = var.bootstrap_password
 
   ssl_enforcement_enabled       = true
-  public_network_access_enabled = var.enable_public_database
+  public_network_access_enabled = false
   geo_redundant_backup_enabled  = false
   backup_retention_days         = 7
   auto_grow_enabled             = true
@@ -77,12 +77,4 @@ resource "azurerm_postgresql_server" "application" {
     email_account_admins = false
     retention_days       = 7
   }
-}
-
-resource "azurerm_postgresql_firewall_rule" "azure_services" {
-  name                = "azure-platform"
-  resource_group_name = azurerm_resource_group.application.name
-  server_name         = azurerm_postgresql_server.application.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
 }
